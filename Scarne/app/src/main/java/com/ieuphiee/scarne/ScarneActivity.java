@@ -37,6 +37,7 @@ public class ScarneActivity extends AppCompatActivity {
         if (ranNumber == 1) {
             diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice1));
             userCurrent = 0;
+            // User's turn ends, and everything that has been added up simply becomes 0
         } else if (ranNumber == 2) {
             diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice2));
             userCurrent += 2;
@@ -53,7 +54,35 @@ public class ScarneActivity extends AppCompatActivity {
             diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice6));
             userCurrent += 6;
         }
-        //Log.d("Testing", Integer.toString(userCurrent));
-        textContainer.setText("Your score (fill in) Computer score: (fill in)\nYour turn Score: "+userCurrent);
+        textContainer.setText("Your score "+userTotal+" Computer score: (fill in)\nYour turn Score: "+userCurrent);
+    }
+
+    /**
+     * Updates user's total score, resets user current, and updates label
+     */
+    public void hold(View view) {
+        userTotal+= userCurrent;
+        userCurrent = 0;
+        TextView textContainer = (TextView) findViewById(R.id.score);
+        textContainer.setText(("Your score "+userTotal+" Computer score: (fill in)\nYour turn Score: "+userCurrent));
+    }
+
+    /**
+     * Resets global variables to 0
+     */
+    public void reset(View view) {
+        userTotal = 0;
+        userCurrent = 0;
+        compCurrent = 0;
+        compTotal = 0;
+        TextView textContainer = (TextView) findViewById(R.id.score);
+        textContainer.setText(("Your score "+userTotal+" Computer score: (fill in)\nYour turn Score: "+userCurrent));
+    }
+
+    /**
+     * Helper method for computer's moves
+     */
+    public void computerTurn(View view) {
+        Handler h
     }
 }
