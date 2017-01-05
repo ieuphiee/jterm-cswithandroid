@@ -43,6 +43,8 @@
         android:text="submit"
         android:paddingTop="16dp"
         android:onClick="submitQuery"
+        android:textColor="#000000"
+        android:background="#D32F2F"
         />
 
     <TextView
