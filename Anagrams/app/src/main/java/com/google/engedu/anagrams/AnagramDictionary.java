@@ -54,14 +54,19 @@ public class AnagramDictionary {
             if(lettersToWord.containsKey(sortLetters(word))){
                 lettersToWord.get(sortLetters(word)).add(word);
             }
-            else{
+            else {
                 ArrayList<String> wordArray = new ArrayList<String>();
                 wordArray.add(word);
                 lettersToWord.put(sortLetters(word),wordArray);
             }
-            //
-            //  Your code here
-            //
+        }
+    }
+
+    @VisibleForTesting
+    public AnagramDictionary(String[] words) {
+        Log.d("Testing constructor", "reading test dictionary");
+        for (int i = 0; i < words.length; i++) {
+            addWordToDict(words[i]);
         }
     }
 
