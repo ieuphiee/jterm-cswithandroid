@@ -37,23 +37,29 @@ public class ScarneActivity extends AppCompatActivity {
         Log.d("Testing", Integer.toString(ranNumber));
         if (ranNumber == 1) {
             diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice1));
+            diceContainer.setContentDescription("One");
             userCurrent = 0;
             hold(view);
             // User's turn ends, and everything that has been added up simply becomes 0
         } else if (ranNumber == 2) {
             diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice2));
+            diceContainer.setContentDescription("Two");
             userCurrent += 2;
         } else if (ranNumber == 3) {
             diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice3));
+            diceContainer.setContentDescription("Three");
             userCurrent += 3;
         } else if (ranNumber == 4) {
             diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice4));
+            diceContainer.setContentDescription("Four");
             userCurrent += 4;
         } else if (ranNumber == 5) {
             diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice5));
+            diceContainer.setContentDescription("Five");
             userCurrent += 5;
         } else {
             diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice6));
+            diceContainer.setContentDescription("Six");
             userCurrent += 6;
         }
         textContainer.setText("Your score "+userTotal+" Computer score: "+compTotal+"\nYour turn Score: "+userCurrent+" " +
@@ -94,38 +100,50 @@ public class ScarneActivity extends AppCompatActivity {
         roll.setEnabled(false);
         hold.setEnabled(false);
         final Runnable mRunnable = new Runnable() {
+            boolean okContinue = true;
             @Override
             public void run() {
-                if (compCurrent < 20) {
+                ImageView diceContainer = (ImageView) findViewById(R.id.dice);
+                TextView textContainer = (TextView) findViewById(R.id.score);
+                if (okContinue && compCurrent < 20) {
                     Random random = new Random();
                     int ranNumber = random.nextInt(6 - 1 + 1) + 1;
-                    ImageView diceContainer = (ImageView) findViewById(R.id.dice);
-                    TextView textContainer = (TextView) findViewById(R.id.score);
                     if (ranNumber == 1) {
                         diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice1));
+                        diceContainer.setContentDescription("One");
+                        okContinue = false;
                         compCurrent = 0;
                         roll.setEnabled(true);
                         hold.setEnabled(true);
                     } else if (ranNumber == 2) {
                         diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice2));
+                        diceContainer.setContentDescription("Two");
                         compCurrent += 2;
                     } else if (ranNumber == 3) {
                         diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice3));
+                        diceContainer.setContentDescription("Three");
                         compCurrent += 3;
                     } else if (ranNumber == 4) {
                         diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice4));
+                        diceContainer.setContentDescription("Four");
                         compCurrent += 4;
                     } else if (ranNumber == 5) {
                         diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice5));
+                        diceContainer.setContentDescription("Five");
                         compCurrent += 5;
                     } else {
                         diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice6));
+                        diceContainer.setContentDescription("Six");
                         compCurrent += 6;
                     }
                     textContainer.setText("Your score " + userTotal + " Computer score: " + compTotal + "\nYour turn Score: " + userCurrent + " " +
                             "Computer turn score " + compCurrent);
                     mHandler.postDelayed(this, 1000);
                 } else {
+                    compTotal += compCurrent;
+                    textContainer.setText("Your score " + userTotal + " Computer score: " + compTotal + "\nYour turn Score: " + userCurrent + " " +
+                            "Computer turn score " + compCurrent);
+                    compCurrent = 0;
                     roll.setEnabled(true);
                     hold.setEnabled(true);
                 }

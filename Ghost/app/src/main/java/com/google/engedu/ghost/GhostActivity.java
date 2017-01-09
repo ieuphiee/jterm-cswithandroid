@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 
+import static java.lang.Thread.sleep;
+
 
 public class GhostActivity extends AppCompatActivity {
     private static final String TAG = "GhostActivity";
@@ -53,53 +55,17 @@ public class GhostActivity extends AppCompatActivity {
         try {
             InputStream inputStream = assetManager.open("words.txt");
             // Initialize your dictionary from the InputStream.
+            dictionary = new SimpleDictionary(inputStream);
+
         } catch (IOException e) {
             Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
             toast.show();
         }
-        onStart(null);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_ghost, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return super.onKeyUp(keyCode, event);
-    }
-
-    /**
-     * Handler for the "Reset" button.
-     * Randomly determines whether the game starts with a user turn or a computer turn.
-     * @param view
-     * @return true
-     */
-    public boolean onStart(View view) {
+        //onStart(null);
+    public boolean reset(View view) {
         userTurn = random.nextBoolean();
+        currentWord = "";
         TextView text = (TextView) findViewById(R.id.ghostText);
         text.setText("");
         TextView label = (TextView) findViewById(R.id.gameStatus);
@@ -112,10 +78,56 @@ public class GhostActivity extends AppCompatActivity {
         return true;
     }
 
+
     private void computerTurn() {
         TextView label = (TextView) findViewById(R.id.gameStatus);
         // Do computer turn stuff then make it the user's turn again
-        userTurn = true;
-        label.setText(USER_TURN);
+        // checks if currentWord is a complete word
+
+        // ghost words
+        TextView text = (TextView) findViewById(R.id.ghostText);
+
+        if(dictionary.isWord(currentWord)){
+            text.setText(currentWord);
+            try {
+                sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            gameOver();
+        }
+        else{
+
+            // possible word
+            String possibleWord = dictionary.getAnyWordStartingWith(currentWord);
+            if(possibleWord == null){
+                // user spelt wrongly
+
+                text.setText(currentWord + " is not a valid word. You lost!");
+            }
+            else{
+                String addLetter = possibleWord.substring(currentWord.length(),currentWord.length()+1);
+                currentWord = currentWord + addLetter;
+                text.setText(currentWord);
+            }
+            // if computer completes word
+//            if(dictionary.isWord(currentWord)){
+//
+//                gameOver();
+//            }
+
+            // after computer turn
+            userTurn = true;
+            label.setText(USER_TURN);
+            // make it implement user turn
+
+
+        }
+
+    }
+
+    public void gameOver(){
+        TextView textView = (TextView) findViewById(R.id.ghostText);
+        textView.setText("GAME OVER");
     }
 }
