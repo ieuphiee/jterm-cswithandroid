@@ -9,12 +9,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ScarneActivity">
+            /**Change to welcomeActivity later*/
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoseActivity" />
+        <activity android:name=".WelcomeActivity" />
+        /**Change to ScarneActivity*/
+        <activity android:name=".WinActivity"></activity>
     </application>
 
 </manifest>

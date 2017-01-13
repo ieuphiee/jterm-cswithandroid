@@ -27,11 +27,59 @@ import static org.junit.Assert.assertTrue;
  *  limitations under the License.
  */
 public class FastDictionaryTest {
+    String[] wordsArray = {"apple", "cat", "caterwaul", "caterwauled", "caterwauling", "caterwauls",
+            "catfish", "catfishes", "cats", "dog", "dogs", "dogfish", "dogfishes", "life", "lives"};
+
     @Test
     public void testIsWord() {
+        ArrayList<String> words = new ArrayList<>(Arrays.asList(wordsArray));
+        FastDictionary dict = new FastDictionary(words);
+
+        assertTrue(dict.isWord("cat"));
+        assertTrue(dict.isWord("cats"));
+        assertFalse(dict.isWord("c"));
+        assertFalse(dict.isWord("fish"));
     }
 
     @Test
     public void testGetAnyWordStartingWith() {
+        ArrayList<String> words = new ArrayList<>(Arrays.asList(wordsArray));
+        FastDictionary dict = new FastDictionary(words);
+
+        // Edge cases
+        assertNull(dict.getAnyWordStartingWith("notaword"));
+        assertNull(dict.getAnyWordStartingWith("caq"));
+        assertNotNull(dict.getAnyWordStartingWith(""));
+
+        // Check some substrings
+        assertEquals("catfishes", dict.getAnyWordStartingWith("catfishe"));
+        assertEquals("catfishes", dict.getAnyWordStartingWith("catfishes"));
+        assertTrue(dict.getAnyWordStartingWith("cat").startsWith("cat"));
+
+        // Check last word in the dict
+        assertEquals("lives", dict.getAnyWordStartingWith("liv"));
+
+        // Check first word
+        assertEquals("apple", dict.getAnyWordStartingWith("a"));
+        assertEquals("apple", dict.getAnyWordStartingWith("ap"));
+        assertEquals("apple", dict.getAnyWordStartingWith("app"));
+        assertEquals("apple", dict.getAnyWordStartingWith("appl"));
+    }
+
+    @Test
+    public void testGetGoodWordStartingWith() {
+        ArrayList<String> words = new ArrayList<>(Arrays.asList(wordsArray));
+        FastDictionary dict = new FastDictionary(words);
+
+        // Shouldn't pick the word itself if another option is available
+        assertFalse("cat".equals(dict.getGoodWordStartingWith("cat")));
+        assertEquals("catfishes", dict.getGoodWordStartingWith("catfishes"));
+        assertEquals("catfishes", dict.getGoodWordStartingWith("catfish"));
+
+
+        assertEquals("apple", dict.getGoodWordStartingWith("a"));
+
+        // Only use that word if it is the only option
+        assertEquals("apple", dict.getGoodWordStartingWith("apple"));
     }
 }

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Mandelbrot Explorer</string>
+    <string name="depth_prompt">Depth:</string>
+    <string name="reset_btn">redraw</string>
+    <string name="default_depth">10</string>
+</resources>
+

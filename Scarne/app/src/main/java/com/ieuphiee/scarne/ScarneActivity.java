@@ -1,5 +1,6 @@
 package com.ieuphiee.scarne;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,28 @@ public class ScarneActivity extends AppCompatActivity {
     }
 
     /**
+     * Displays you lost page
+     */
+    public static final String computerScore = "com.ieuphiee.scarne.compTotal";
+    public void computerWins() {
+        Intent intent = new Intent(this, LoseActivity.class);
+        intent.putExtra(computerScore, String.valueOf(compTotal+compCurrent));
+        startActivity(new Intent(this, LoseActivity.class));
+        reset();
+    }
+
+    /**
+     * Displays you win page
+     */
+    public static final String userScore = "com.ieuphiee.scarne.userTotal";
+    public void playerWins() {
+        Intent intent = new Intent(this, WinActivity.class);
+        intent.putExtra(userScore, String.valueOf(userTotal+userCurrent));
+        startActivity(intent);
+        reset();
+    }
+
+    /**
      * Randomly rolls dice
      */
     public void rollDice(View view) {
@@ -34,54 +57,59 @@ public class ScarneActivity extends AppCompatActivity {
         int ranNumber = random.nextInt(6 - 1 + 1) + 1;
         ImageView diceContainer = (ImageView) findViewById(R.id.dice);
         TextView textContainer = (TextView) findViewById(R.id.score);
-        Log.d("Testing", Integer.toString(ranNumber));
-        if (ranNumber == 1) {
-            diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice1));
-            diceContainer.setContentDescription("One");
-            userCurrent = 0;
-            hold(view);
-            // User's turn ends, and everything that has been added up simply becomes 0
-        } else if (ranNumber == 2) {
-            diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice2));
-            diceContainer.setContentDescription("Two");
-            userCurrent += 2;
-        } else if (ranNumber == 3) {
-            diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice3));
-            diceContainer.setContentDescription("Three");
-            userCurrent += 3;
-        } else if (ranNumber == 4) {
-            diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice4));
-            diceContainer.setContentDescription("Four");
-            userCurrent += 4;
-        } else if (ranNumber == 5) {
-            diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice5));
-            diceContainer.setContentDescription("Five");
-            userCurrent += 5;
+        if (userTotal >= 20) {
+            playerWins();
         } else {
-            diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice6));
-            diceContainer.setContentDescription("Six");
-            userCurrent += 6;
+            if (ranNumber == 1) {
+                diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice1));
+                diceContainer.setContentDescription("One");
+                userCurrent = 0;
+                hold();
+                // User's turn ends, and everything that has been added up simply becomes 0
+            } else if (ranNumber == 2) {
+                diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice2));
+                diceContainer.setContentDescription("Two");
+                userCurrent += 2;
+            } else if (ranNumber == 3) {
+                diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice3));
+                diceContainer.setContentDescription("Three");
+                userCurrent += 3;
+            } else if (ranNumber == 4) {
+                diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice4));
+                diceContainer.setContentDescription("Four");
+                userCurrent += 4;
+            } else if (ranNumber == 5) {
+                diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice5));
+                diceContainer.setContentDescription("Five");
+                userCurrent += 5;
+            } else {
+                diceContainer.setImageDrawable(getResources().getDrawable(R.drawable.dice6));
+                diceContainer.setContentDescription("Six");
+                userCurrent += 6;
+            }
         }
         textContainer.setText("Your score "+userTotal+" Computer score: "+compTotal+"\nYour turn Score: "+userCurrent+" " +
-                "Computer turn score "+compCurrent);    }
+                "Computer turn score "+compCurrent);
+    }
+
 
     /**
      * Updates user's total score, resets user current, and updates label
      */
-    public void hold(View view) {
+    public void hold() {
         userTotal+= userCurrent;
         userCurrent = 0;
         TextView textContainer = (TextView) findViewById(R.id.score);
         textContainer.setText("Your score "+userTotal+" Computer score: "+compTotal+"\nYour turn Score: "+userCurrent+" " +
                 "Computer turn score "+compCurrent);
 
-        computerTurn(view);
+        computerTurn();
     }
 
     /**
      * Resets global variables to 0
      */
-    public void reset(View view) {
+    public void reset() {
         userTotal = 0;
         userCurrent = 0;
         compCurrent = 0;
@@ -93,7 +121,7 @@ public class ScarneActivity extends AppCompatActivity {
     /**
      * Helper method for computer's moves
      */
-    public void computerTurn(View view) {
+    public void computerTurn() {
         final Handler mHandler = new Handler();
         final Button roll = (Button) findViewById(R.id.roll);
         final Button hold = (Button) findViewById(R.id.hold);
@@ -105,6 +133,9 @@ public class ScarneActivity extends AppCompatActivity {
             public void run() {
                 ImageView diceContainer = (ImageView) findViewById(R.id.dice);
                 TextView textContainer = (TextView) findViewById(R.id.score);
+                if (compTotal+compCurrent >= 20) {
+                    computerWins();
+                }
                 if (okContinue && compCurrent < 20) {
                     Random random = new Random();
                     int ranNumber = random.nextInt(6 - 1 + 1) + 1;
